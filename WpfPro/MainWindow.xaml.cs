@@ -19,6 +19,7 @@ using System.Web;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography.X509Certificates;
+using WpfPro;
 
 namespace WpfPro
 {
@@ -30,36 +31,50 @@ namespace WpfPro
         public MainWindow()
         {
             InitializeComponent();
+            using (WebClient wc = new WebClient())
+            {
+                var json = wc.DownloadString("https://opentdb.com/api_category.php");
+                JObject categories = JObject.Parse(json);
+                for (int i = 0; i < categories.Count; i++)
+                {
+                    Category.Items.Add(categories.GetValue("trivia_categories")["name"].ToString());
+                }
+                //Kell.Text = categories.ToString();
+            }
         }
 
-        public void SaveToJson(TextBlock KEll)
+        public void SaveToJson(int amount, int cata, string diff, string type)
         {
-            string filePath = "Data.json";
 
 
             using (WebClient wc = new WebClient())
             {
-                var json = wc.DownloadString($"https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiple&encode=base64");
+                
+                var json = wc.DownloadString($"https://opentdb.com/api.php?amount={amount}&category={cata}&difficulty={diff}&type={type}&encode=base64");
                 JObject q = JObject.Parse(json);
                 for (int i = 0; i < 10; i++)
                 {
-                    q.GetValue("results")[i]["category"] = Decode(q, "category", i);
-                    q.GetValue("results")[i]["type"] = Decode(q, "type", i);
-                    q.GetValue("results")[i]["difficulty"] = Decode(q, "difficulty", i);
-                    q.GetValue("results")[i]["question"] = Decode(q, "question", i);
-                    q.GetValue("results")[i]["correct_answer"] = Decode(q, "correct_answer", i);
+                    Questions quest = new Questions();
+                    quest.question = Decode(q, "question", i);
+                    quest.correctAnswer = Decode(q, "correct_answer", i);
                     for (int f = 0; f < 3; f++)
                     {
-                        q.GetValue("results")[i]["incorrect_answers"][f] = Decode(q, "incorrect_answers", i, true, f);
+                        quest.incorrectAnswer[f] = Decode(q, "incorrect_answers", i, true, f);
                     }
-                    
+                    AllData.AllQuest.Add(quest);
                 }
             }
         }
 
-        public void GEt(object o, RoutedEventArgs s) { 
-        
-            SaveToJson(Kell);
+        public void GEt(object o, RoutedEventArgs s)
+        {
+
+            SaveToJson(10, 15, "medium", "multiple");
+            using (WebClient wc = new WebClient())
+            {
+                var json = wc.DownloadString("https://opentdb.com/api_category.php");
+                Kell.Text = json;
+            }
         }
         private string Decode(JObject jobi, string cata, int index, bool liste = false, int listindex = 0) {
 
@@ -78,10 +93,18 @@ namespace WpfPro
         }
 
     }
-    public static class Questions
+    public class Questions
     {
-
-        public static JObject q { get; set; }
-        
+        //public static string category { get; set; }
+        //public static string type { get; set; }
+        //public static string difficulty { get; set; }
+        public string question { get; set; }
+        public string correctAnswer { get; set; }
+        public string[] incorrectAnswer = new string[3];
+       
+    }
+    public static class AllData
+    {
+        public static List<Questions> AllQuest { get; set; } = new List<Questions>();
     }
 }
