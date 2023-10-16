@@ -1,0 +1,23 @@
+﻿<Window x:Class="WpfPro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPro"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Background="Blue">
+    <Grid>
+        <Button Content="Get Api Quiz" HorizontalAlignment="Center" VerticalAlignment="Top" Height="75" Width="224" Click="GEt" ClickMode="Press" Margin="0,20,0,0"/>
+        <TextBlock x:Name="Kell" HorizontalAlignment="Left" Margin="50,122,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="302" Width="661" RenderTransformOrigin="0.5,0.5">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="0"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="0"/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+
+    </Grid>
+</Window>
